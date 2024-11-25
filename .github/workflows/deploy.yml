@@ -2,72 +2,37 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: [ master, add-automated-rendering ]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  build:
+  generate-screenshots:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build the project
-        run: npm run build
-
-      - name: Clean up dist folder
-        run: |
-          # Removing any symlinks
-          find dist -type l -exec rm -f {} \;
-          # Clean up links and unwanted files
-          find dist -type f -links +1 -exec rm -f {} \;
-
-      - name: Check for symlinks
-        run: find dist -type l
-
-      - name: Check build directory size
-        run: du -sh dist
-
-      - name: List files in dist directory (detailed)
-        run: find dist -type f -exec ls -l {} \;
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
+      - name: Checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner.
+      - name: Build Docker images
+        run: make build
+      - name: Generate screenshots
+        run: make run-to-generate-screenshots
+      - name: Upload screenshots as a github-pages artifact
+        uses: actions/upload-artifact@v2
+        with: 
           name: github-pages
           path: ./dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Create dist directory
-        run: mkdir -p dist
-
-      - name: Deploy a simple test file
-        run: echo "Hello World" > dist/index.html
-
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: github-pages
-
-    
+        uses: actions/deploy-pages@v1
