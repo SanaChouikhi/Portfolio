@@ -1,49 +1,40 @@
-name: Build and Deploy to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
+  # Déclenche le workflow à chaque fois qu'une modification est poussée sur la branche `main`
+  # Si vous utilisez une autre branche, remplacez `main` par le nom de votre branche.
   push:
-    branches:
-      - main  # ou votre branche de déploiement
+    branches: [main]
+  # Permet d'exécuter ce workflow manuellement depuis l'onglet Actions de GitHub.
+  workflow_dispatch:
+
+# Accorde les permissions nécessaires pour cloner le repo et effectuer le déploiement.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Install, build, and upload your site output
+        uses: withastro/action@v2
         with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build the project
-        run: npm run build  # Changez si nécessaire selon votre configuration
-
-      - name: Upload artifact for deployment
-        uses: actions/upload-artifact@v3
-        with:
-          name: github-pages  # Nom de l'artefact
-          path: ./dist  # Changez ce chemin si nécessaire selon votre build
+          # path: . # Emplacement de votre projet Astro dans le repo, par défaut il est à la racine.
+          # node-version: 20 # Version de Node à utiliser pour la construction du site, par défaut 20.
+          # package-manager: pnpm@latest # Gestionnaire de paquets à utiliser. Vous pouvez préciser un autre comme npm, yarn, etc.
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write    # Permet l'écriture sur GitHub Pages
-      id-token: write # Permet l'authentification via un token
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      - name: Deploy GitHub Pages site
+      - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
-        with:
-          artifact_name: github-pages  # Doit correspondre au nom de l'artefact téléchargé
+        uses: actions/deploy-pages@v4
