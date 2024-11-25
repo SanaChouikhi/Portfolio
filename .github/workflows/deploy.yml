@@ -1,10 +1,8 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Déclenche le workflow à chaque fois qu'une modification est poussée sur la branche `main`
   push:
     branches: [main]
-  # Permet d'exécuter ce workflow manuellement depuis l'onglet Actions de GitHub.
   workflow_dispatch:
 
 permissions:
@@ -22,13 +20,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Vous pouvez définir une version spécifique de Node.js
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm install  # Si vous utilisez npm, ou ajustez pour yarn/pnpm si nécessaire
+        run: npm install
 
       - name: Build the project
-        run: npm run build  # Assurez-vous que votre commande de build est correctement configurée
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: ./dist  # Utilisez le dossier de build 'dist' ici
 
   deploy:
     needs: build
@@ -37,9 +41,12 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          branch: gh-pages  # Branche cible pour le déploiement
-          folder: public  # Dossier de sortie de votre build Astro (ajustez si nécessaire)
+          token: ${{ secrets.GITHUB_TOKEN }}  # Token d'accès pour le déploiement
+
