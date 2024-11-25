@@ -27,5 +27,4 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          personal_token: ${{ secrets.ACTIONS_DEPLOY_TOKEN }}
           publish_dir: ./dist  # Changez cela au répertoire de sortie de votre projet Astro
