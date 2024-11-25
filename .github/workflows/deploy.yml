@@ -25,9 +25,9 @@ jobs:
         run: npm run build  # Assurez-vous que le build génère des fichiers dans ./dist (ou votre dossier de sortie)
 
       - name: Upload artifact for deployment
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-artifact@v3  # Assurez-vous d'utiliser cette action pour uploader l'artefact
         with:
-          name: github-pages
+          name: github-pages  # Nom de l'artefact pour qu'il soit reconnu dans la prochaine étape
           path: ./dist  # Changez ce chemin pour correspondre à la sortie de votre projet
 
   deploy:
