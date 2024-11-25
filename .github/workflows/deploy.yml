@@ -1,12 +1,12 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # ou toute autre branche que vous utilisez pour déployer
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,16 +16,34 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.14.1'  # La version de Node.js supportée par Astro
+          node-version: '18.14.1'
 
       - name: Install dependencies
         run: npm install
 
       - name: Build the project
-        run: npm run build
+        run: npm run build  # Assurez-vous que le build génère des fichiers dans ./dist (ou votre dossier de sortie)
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist  # Changez cela au répertoire de sortie de votre projet Astro
+          name: github-pages
+          path: ./dist  # Changez ce chemin pour correspondre à la sortie de votre projet
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      # Donne l'autorisation pour déployer sur GitHub Pages
+      id-token: write   # Pour valider que le déploiement provient de la source appropriée
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}  # URL du site déployé
+
+    steps:
+      - name: Deploy GitHub Pages site
+        id: deployment
+        uses: actions/deploy-pages@v4.0.5
+        with:
+          artifact_name: github-pages  # Nom de l'artefact téléchargé
