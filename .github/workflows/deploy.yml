@@ -63,6 +63,3 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: github-pages
-
-      - name: Get Deployment URL
-        run: echo "Deployment URL: ${{ steps.deployment.outputs.page_url }}"
