@@ -2,47 +2,73 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ master, add-automated-rendering ]
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
-  generate-screenshots:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo content
-        uses: actions/checkout@v4  # Utilisez la dernière version
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Build Docker images
-        run: make build
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-      - name: Generate screenshots
-        run: make run-to-generate-screenshots
+      - name: Install dependencies
+        run: npm install
 
-      - name: List files in dist directory
+      - name: Build the project
+        run: npm run build
+
+      - name: Clean up dist folder
         run: |
-          echo "Listing files in dist directory:"
-          ls -l ./dist
+          # Removing any symlinks
+          find dist -type l -exec rm -f {} \;
+          # Clean up links and unwanted files
+          find dist -type f -links +1 -exec rm -f {} \;
 
-      - name: Upload screenshots as a github-pages artifact
-        uses: actions/upload-artifact@v4  # Utilisez la dernière version
-        with: 
+      - name: Check for symlinks
+        run: find dist -type l
+
+      - name: Check build directory size
+        run: du -sh dist
+
+      - name: List files in dist directory (detailed)
+        run: find dist -type f -exec ls -l {} \;
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
           name: github-pages
           path: ./dist
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create dist directory
+        run: mkdir -p dist
+
+      - name: Deploy a simple test file
+        run: echo "Hello World" > dist/index.html
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: github-pages
+
+      - name: Get Deployment URL
+        run: echo "${{ steps.deployment.outputs.page_url }}"
