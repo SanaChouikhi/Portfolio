@@ -35,6 +35,9 @@ jobs:
           # Clean up links and unwanted files
           find dist -type f -links +1 -exec rm -f {} \;
 
+      - name: Check for symlinks
+        run: find dist -type l
+
       - name: Check build directory size
         run: du -sh dist
 
@@ -42,7 +45,7 @@ jobs:
         run: find dist -type f -exec ls -l {} \;
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: ./dist
@@ -54,12 +57,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create dist directory
+        run: mkdir -p dist
+
+      - name: Deploy a simple test file
+        run: echo "Hello World" > dist/index.html
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: github-pages
 
-      - name: Get Deployment URL
-        run: echo "Deployment URL: ${{ steps.deployment.outputs.page_url }}"
+    
