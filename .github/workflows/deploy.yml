@@ -30,46 +30,32 @@ jobs:
 
       - name: Clean up dist folder
         run: |
-          # Removing any symlinks
+          echo "Cleaning up dist folder..."
+          # Remove all symlinks
           find dist -type l -exec rm -f {} \;
-          # Removing any hard links
+          # Remove all files with multiple links (hard links)
           find dist -type f -links +1 -exec rm -f {} \;
 
-      - name: Verify there are no symlinks
+      - name: Verify the absence of symlinks and hard links
         run: |
           symlinks=$(find dist -type l)
+          hardlinks=$(find dist -type f -links +1)
           if [ -n "$symlinks" ]; then
             echo "Found symlinks:"
             echo "$symlinks"
             exit 1
           fi
-
-      - name: Verify there are no hard links
-        run: |
-          hardlinks=$(find dist -type f -links +1)
           if [ -n "$hardlinks" ]; then
             echo "Found hard links:"
             echo "$hardlinks"
             exit 1
           fi
 
-      - name: Check build directory size
+      - name: Check the size of the dist directory
         run: du -sh dist
 
       - name: List files in dist directory (detailed)
         run: find dist -type f -exec ls -l {} \;
-
-      - name: List files with inode numbers
-        run: find dist -exec ls -i {} \;
-
-      - name: Check for broken symlinks
-        run: |
-          broken_symlinks=$(find dist -xtype l)
-          if [ -n "$broken_symlinks" ]; then
-            echo "Found broken symlinks:"
-            echo "$broken_symlinks"
-            exit 1
-          fi
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -94,9 +80,6 @@ jobs:
 
       - name: List downloaded files (detailed)
         run: find . -type f -exec ls -l {} \;
-
-      - name: List downloaded files with inode numbers
-        run: find . -exec ls -i {} \;
 
       - name: Deploy to GitHub Pages
         id: deployment
