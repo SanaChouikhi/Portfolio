@@ -19,20 +19,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js (version 18)
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Utilisez une version stable de Node.js
+          node-version: '18'  # Utilisez une version compatible d'Astro, comme 18.x ou 20.x
 
       - name: Install dependencies
         run: npm install
 
       - name: Build the project
-        run: npm run build  # Cette commande va générer le dossier `dist/`
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages  # La branche de destination pour GitHub Pages
-          folder: dist      # Le dossier contenant les fichiers construits
+          branch: gh-pages
+          folder: dist
           token: ${{ secrets.GITHUB_TOKEN }}
