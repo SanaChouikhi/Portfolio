@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js (version 18)
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Utilisez une version compatible d'Astro, comme 18.x ou 20.x
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
@@ -35,4 +35,3 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
-          token: ${{ secrets.GITHUB_TOKEN }}
