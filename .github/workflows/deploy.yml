@@ -38,6 +38,9 @@ jobs:
       - name: Check for symlinks
         run: find dist -type l
 
+      - name: Check for hard links
+        run: find dist -type f -links +1
+
       - name: Check build directory size
         run: du -sh dist
 
