@@ -5,13 +5,12 @@ import tailwind from '@astrojs/tailwind';
 
 import sitemap from "@astrojs/sitemap";
 
-const LIVE_URL="https://SanaChouikhi.github.io/Portfolio";
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://Portfolio.github.io',
   devToolbar: {
     enabled: false
   },
   integrations: [react(), tailwind(), sitemap()],
-  site:LIVE_URL,
 });
