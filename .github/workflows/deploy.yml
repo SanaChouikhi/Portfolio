@@ -32,7 +32,7 @@ jobs:
         run: |
           # Removing any symlinks
           find dist -type l -exec rm -f {} \;
-          # Clean up links and unwanted files
+          # Removing any hard links
           find dist -type f -links +1 -exec rm -f {} \;
 
       - name: Check for symlinks
@@ -57,11 +57,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create dist directory
-        run: mkdir -p dist
-
-      - name: Deploy a simple test file
-        run: echo "Hello World" > dist/index.html
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
 
       - name: Deploy to GitHub Pages
         id: deployment
@@ -69,5 +68,3 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: github-pages
-
-      
