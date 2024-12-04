@@ -59,7 +59,7 @@ export const portafolioData = [
         anim: 'fade-up',
         averageBrightness: 0.2,
     },
-    {
+ /*   {
         imgSrc: '/img/employee-management-image.PNG',
         title: 'Employee Management System',
         skills: ['PHP', 'MySQL','VsCode'],
@@ -68,7 +68,7 @@ export const portafolioData = [
         demoURL: '',
         //repoURL: 'https://github.com/username/employee-management',
         anim: 'fade-right',
-    },
+    },*/
     {
         imgSrc: '/img/Hearti App.PNG',
         title: 'Hearti App',
