@@ -1,0 +1,109 @@
+---
+import './hero.css';
+import Boton from '../atoms/Boton.astro';
+---
+
+<section class="hero">
+	<div class="hero__bg-grid"></div>
+	<div class="hero__container">
+		<div class="text__content">
+			<div class="hero__badge">👋 Open to new opportunities</div>
+			<h1 class="hero__title color__gradiente">Sana Chouikhi</h1>
+			<p class="hero__text">
+				Software Engineer —
+				<span class="hero__typing" id="typing-text"></span>
+			</p>
+			<div class="hero__cta">
+				<Boton href="#about" texto="About Me" />
+				<a href="../docs/CV_CHOUIKHI_SANA.pdf" target="_blank" class="hero__cv-link">
+					<iconify-icon icon="tabler:file-cv" width="20" height="20"></iconify-icon>
+					Download CV
+				</a>
+			</div>
+			<div class="hero__stats">
+				<div class="hero__stat">
+					<span class="hero__stat-num">7+</span>
+					<span class="hero__stat-label">Projects</span>
+				</div>
+				<div class="hero__stat">
+					<span class="hero__stat-num">2+</span>
+					<span class="hero__stat-label">Years Exp.</span>
+				</div>
+				<div class="hero__stat">
+					<span class="hero__stat-num">20+</span>
+					<span class="hero__stat-label">Technologies</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="hero__code-block">
+			<div class="code-window">
+				<div class="code-window__header">
+					<span class="dot red"></span>
+					<span class="dot yellow"></span>
+					<span class="dot green"></span>
+					<span class="code-window__title">sana.ts</span>
+				</div>
+				<div class="code-window__body">
+					<pre><code><span class="kw">const</span> <span class="var">sana</span> = <span class="bracket">{</span>
+  <span class="key">name</span>:      <span class="str">"Sana Chouikhi"</span>,
+  <span class="key">role</span>:      <span class="str">"Software Engineer"</span>,
+  <span class="key">focus</span>: <span class="bracket">[</span>
+    <span class="str">"ERP & Automation"</span>,
+    <span class="str">"DevOps & Cloud"</span>,
+    <span class="str">"Backend Systems"</span>,
+  <span class="bracket">]</span>,
+  <span class="key">stack</span>: <span class="bracket">[</span>
+    <span class="str">"Python"</span>, <span class="str">"Node.js"</span>,
+    <span class="str">"Docker"</span>, <span class="str">"ERPNext"</span>,
+    <span class="str">"React"</span>,  <span class="str">"Flutter"</span>,
+  <span class="bracket">]</span>,
+  <span class="key">location</span>:  <span class="str">"Tunis, Tunisia 🇹🇳"</span>,
+  <span class="key">available</span>: <span class="bool">true</span>,
+<span class="bracket">}</span></code></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="hero__scroll-hint">
+		<span>Scroll</span>
+		<iconify-icon icon="lucide:chevrons-down" width="20"></iconify-icon>
+	</div>
+</section>
+
+<script>
+	const roles = [
+		"ERP & Business Automation",
+		"DevOps & Cloud Engineering",
+		"Backend Systems & APIs",
+		"Full-Stack Web & Mobile",
+	];
+	let roleIndex = 0;
+	let charIndex = 0;
+	let deleting = false;
+	const el = document.getElementById("typing-text");
+
+	function type() {
+		if (!el) return;
+		const current = roles[roleIndex];
+		if (!deleting) {
+			el.textContent = current.slice(0, charIndex + 1);
+			charIndex++;
+			if (charIndex === current.length) {
+				deleting = true;
+				setTimeout(type, 1800);
+				return;
+			}
+		} else {
+			el.textContent = current.slice(0, charIndex - 1);
+			charIndex--;
+			if (charIndex === 0) {
+				deleting = false;
+				roleIndex = (roleIndex + 1) % roles.length;
+			}
+		}
+		setTimeout(type, deleting ? 60 : 90);
+	}
+	type();
+</script>

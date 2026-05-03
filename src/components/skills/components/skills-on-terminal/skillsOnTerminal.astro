@@ -1,0 +1,124 @@
+---
+import Terminal from '../terminal/Terminal.astro';
+import './skills-on-terminal.css';
+
+// Using Iconify icons only — no local SVG files needed
+const skillGroups = [
+  {
+    category: "ERP & Automation",
+    skills: [
+      { icon: "skill-icons:python-dark",      name: "Python" },
+      { icon: "skill-icons:django",            name: "Django REST" },
+      { icon: "devicon:frappe",               name: "ERPNext/Frappe", fallback: "mdi:cog-sync" },
+      { icon: "mdi:robot-industrial",          name: "n8n Automation" },
+    ],
+  },
+  {
+    category: "DevOps & Cloud",
+    skills: [
+      { icon: "skill-icons:docker",            name: "Docker" },
+      { icon: "skill-icons:githubactions-dark",name: "GitHub Actions" },
+      { icon: "skill-icons:linux-dark",        name: "Linux" },
+      { icon: "skill-icons:aws-dark",          name: "AWS" },
+    ],
+  },
+  {
+    category: "Backend & Databases",
+    skills: [
+      { icon: "skill-icons:nodejs-dark",       name: "Node.js" },
+      { icon: "skill-icons:expressjs-dark",    name: "Express" },
+      { icon: "skill-icons:mongodb",           name: "MongoDB" },
+      { icon: "skill-icons:mysql-dark",        name: "MySQL" },
+      { icon: "skill-icons:redis-dark",        name: "Redis" },
+      { icon: "skill-icons:sqlite",            name: "SQLite" },
+    ],
+  },
+  {
+    category: "Frontend & Mobile",
+    skills: [
+      { icon: "skill-icons:react-dark",        name: "React.js" },
+      { icon: "skill-icons:typescript",        name: "TypeScript" },
+      { icon: "skill-icons:tailwindcss-dark",  name: "Tailwind CSS" },
+      { icon: "skill-icons:flutter-dark",      name: "Flutter" },
+      { icon: "skill-icons:react-dark",        name: "React Native" },
+      { icon: "skill-icons:angular-dark",      name: "Angular" },
+    ],
+  },
+  {
+    category: "Observability & Security",
+    skills: [
+      { icon: "devicon:prometheus",            name: "Prometheus" },
+      { icon: "skill-icons:grafana-dark",      name: "Grafana" },
+      { icon: "mdi:shield-lock",               name: "HashiCorp Vault" },
+      { icon: "mdi:email-lock",                name: "SPF/DKIM/DMARC" },
+      { icon: "mdi:certificate",               name: "SSL/TLS" },
+    ],
+  },
+  {
+    category: "Tools & Methods",
+    skills: [
+      { icon: "skill-icons:github-dark",       name: "Git / GitHub" },
+      { icon: "skill-icons:figma-dark",        name: "Figma" },
+      { icon: "skill-icons:postman",           name: "Postman" },
+      { icon: "skill-icons:vscode-dark",       name: "VS Code" },
+      { icon: "mdi:jira",                      name: "Jira / Agile" },
+    ],
+  },
+];
+---
+
+<Terminal nombre="ChouikhiSana">
+  <div class="terminal__skills">
+    <h2>My Skills</h2>
+
+    {skillGroups.map((group) => (
+      <div class="skill-group">
+        <p class="terminal__category">— {group.category}</p>
+        <div class="terminal__skills__container">
+          {group.skills.map((skill) => (
+            <div class="terminal-skill-item">
+              <iconify-icon icon={skill.icon} width="32" height="32" />
+              <span class="terminal-skill-name">{skill.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</Terminal>
+
+<style>
+  .skill-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .terminal__category {
+    font-size: 1.1rem;
+    color: #a78bfa;
+    font-weight: 600;
+    margin: 1.5rem 0 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .terminal__skills__container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+  }
+
+  .terminal-skill-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 5rem;
+  }
+
+  .terminal-skill-name {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    line-height: 1.2;
+  }
+</style>
